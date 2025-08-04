@@ -12,13 +12,21 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        $query = ExamResult::with('exam')->latest();
+        $query = ExamResult::with('exam')->whereHas('exam', function ($q) {
+            $q->where('user_id', Auth::id());
+        })->latest();
 
         if ($request->filled('due_date')) {
             $query->whereHas('exam', function ($q) use ($request) {
-                $q->where('start_date', '<=', $request->due_date)
+                $q->where('user_id', Auth::id())
+                    ->where('start_date', '<=', $request->due_date)
                     ->where('end_date', '>=', $request->due_date);
             });
+        }
+
+        // Filter berdasarkan judul ulangan kudunamah
+        if ($request->filled('exam_id')) {
+            $query->where('exam_id', $request->exam_id);
         }
 
         $examResults = $query->get();
@@ -45,16 +53,32 @@ class DashboardController extends Controller
     public function exportResultsPdf(Request $request)
     {
         $dueDate = $request->input('due_date');
-        $query = ExamResult::with('exam');
+        $examId = $request->input('exam_id');
+        $query = ExamResult::with('exam')->whereHas('exam', function ($q) {
+            $q->where('user_id', Auth::id());
+        });
+        
         if ($dueDate) {
             $query->whereHas('exam', function ($q) use ($dueDate) {
-                $q->where('start_date', '<=', $dueDate)
+                $q->where('user_id', Auth::id())
+                    ->where('start_date', '<=', $dueDate)
                     ->where('end_date', '>=', $dueDate);
             });
         }
+
+        // Filter berdasarkan judul ulangan
+        if ($examId) {
+            $query->where('exam_id', $examId);
+        }
+        
         $results = $query->get();
 
         $pdf = Pdf::loadView('exports.exam_results_pdf', compact('results'));
         return $pdf->download('hasil-ulangan.pdf');
+    }
+    public function destroyExam(Exam $exam)
+    {
+        $exam->delete();
+        return redirect()->route('dashboard')->with('success', 'Sesi ulangan berhasil dihapus.');
     }
 }

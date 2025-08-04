@@ -27,18 +27,9 @@ Route::get('/latihan/hasil/{result}', [LatihanController::class, 'showResult'])-
 
 // --- RUTE UNTUK FITUR ULANGAN ---
 Route::prefix('ulangan')->name('ulangan.')->group(function () {
-    Route::get('/', function () {
-        $today = now()->toDateString();
-        $exam = \App\Models\Exam::where('start_date', '<=', $today)
-            ->where('end_date', '>=', $today)
-            ->first();
-        if ($exam) {
-            return redirect()->route('ulangan.face-check', $exam);
-        }
-        return redirect('/')->with('status', 'Tidak ada ulangan aktif.');
-    })->name('index');
+    Route::get('/', [UlanganController::class, 'index'])->name('index');
     Route::get('/{exam}/cek-wajah', [UlanganController::class, 'showFaceCheck'])->name('face-check');
-    Route::post('/{exam_result}/simpan-foto', [UlanganController::class, 'storeFaceImage'])->name('store-face-image');
+    Route::post('/{exam}/simpan-foto', [UlanganController::class, 'storeFaceImage'])->name('store-face-image');
     Route::get('/{exam_result}/soal', [UlanganController::class, 'showSoal'])->name('soal');
     Route::post('/selesai', [UlanganController::class, 'storeResult'])->name('storeResult');
     Route::get('/hasil/{exam_result}', [UlanganController::class, 'showResult'])->name('showResult');
@@ -51,6 +42,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/ulangan-baru', [ExamController::class, 'create'])->name('exams.create');
     Route::post('/ulangan-baru', [ExamController::class, 'store'])->name('exams.store');
+    Route::delete('/exams/{exam}', [DashboardController::class, 'destroyExam'])->name('exams.destroy');
     Route::delete('/hasil-ulangan/{result}', [DashboardController::class, 'destroyResult'])->name('exam-results.destroy');
     Route::get('/export/hasil-ulangan/pdf', [DashboardController::class, 'exportResultsPdf'])->name('exam-results.export-pdf');
     Route::get('/hasil-ulangan/{result}/detail', [DashboardController::class, 'showResultDetail'])->name('exam-results.detail');

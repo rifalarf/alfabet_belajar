@@ -18,8 +18,8 @@
                         <p class="mt-2 text-gray-600">
                             Posisikan wajah Anda di dalam area kamera, lalu tekan tombol di bawah.
                         </p>
-                        @if($examResult->exam->end_date)
-                        <p class="text-sm text-gray-500 mt-2">Periode: {{ \Carbon\Carbon::parse($examResult->exam->start_date)->format('d M Y') }} - {{ \Carbon\Carbon::parse($examResult->exam->end_date)->format('d M Y') }}</p>
+                        @if($exam->end_date)
+                        <p class="text-sm text-gray-500 mt-2">Periode: {{ \Carbon\Carbon::parse($exam->start_date)->format('d M Y') }} - {{ \Carbon\Carbon::parse($exam->end_date)->format('d M Y') }}</p>
                         @endif
 
                         {{-- Area untuk menampilkan stream kamera --}}
@@ -79,7 +79,7 @@
                     const formData = new FormData();
                     formData.append('image', blob, 'face-capture.png');
 
-                    const url = '{{ route("ulangan.store-face-image", ["exam_result" => $examResult]) }}';
+                    const url = '{{ route("ulangan.store-face-image", ["exam" => $exam]) }}';
 
                     fetch(url, {
                             method: 'POST',

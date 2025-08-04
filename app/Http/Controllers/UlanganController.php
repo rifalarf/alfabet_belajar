@@ -16,45 +16,43 @@ class UlanganController extends Controller
     public function index()
     {
         $today = now()->toDateString();
-        $activeExams = Exam::where('start_date', '<=', $today)
+        $activeExams = Exam::with('user')
+            ->where('start_date', '<=', $today)
             ->where('end_date', '>=', $today)
             ->get();
         return view('ulangan.index', ['activeExams' => $activeExams]);
     }
 
     /**
-     * Membuat record hasil dan menampilkan halaman "Cek Wajah".
+     * Menampilkan halaman "Cek Wajah".
      */
     public function showFaceCheck(Exam $exam)
     {
-        // Buat record hasil baru saat siswa memilih ulangan
+        return view('ulangan.face-check', ['exam' => $exam]);
+    }
+
+    /**
+     * Membuat record hasil dan menyimpan foto wajah yang diunggah dari kamera.
+     */
+    public function storeFaceImage(Request $request, Exam $exam)
+    {
+        $request->validate(['image' => 'required|image']);
+
+        // Buat record hasil baru saat siswa mengklik tombol kamera
         $examResult = ExamResult::create([
             'exam_id' => $exam->id,
             'student_name' => 'Siswa', // Nama default, bisa diubah jika ada login siswa
             'score' => 0,
         ]);
 
-        return view('ulangan.face-check', ['examResult' => $examResult]);
-    }
-
-    /**
-     * Menyimpan foto wajah yang diunggah dari kamera.
-     */
-    public function storeFaceImage(Request $request, ExamResult $exam_result)
-    {
-        $request->validate(['image' => 'required|image']);
-
-        if ($exam_result->face_image_path) {
-            Storage::disk('public')->delete($exam_result->face_image_path);
-        }
-
+        // Simpan foto wajah
         $path = $request->file('image')->store('face_images', 'public');
-        $exam_result->face_image_path = $path;
-        $exam_result->save();
+        $examResult->face_image_path = $path;
+        $examResult->save();
 
         return response()->json([
             'success' => true,
-            'redirect_url' => route('ulangan.soal', ['exam_result' => $exam_result->id])
+            'redirect_url' => route('ulangan.soal', ['exam_result' => $examResult->id])
         ]);
     }
 
