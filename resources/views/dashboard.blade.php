@@ -138,7 +138,7 @@
                                     <td class="px-6 py-4">
                                         <span class="font-medium text-gray-900">{{ $result->exam->title }}</span>
                                         <br>
-                                        <span class="text-xs text-gray-500">Kode: {{ $result->exam->code }}</span>
+                                        <!-- <span class="text-xs text-gray-500">Kode: {{ $result->exam->code }}</span> -->
                                     </td>
                                     <td class="px-6 py-4 font-bold text-gray-900">{{ $result->score }}</td>
                                     <td class="px-6 py-4">{{ $result->created_at->format('d M Y') }}</td>
