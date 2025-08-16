@@ -6,6 +6,7 @@ use App\Models\Exam;
 use App\Models\ExamResult;
 use App\Models\Question;
 use Illuminate\Http\Request;
+use Illuminate\Http\File;
 use Illuminate\Support\Facades\Storage;
 
 class UlanganController extends Controller
@@ -36,7 +37,9 @@ class UlanganController extends Controller
      */
     public function storeFaceImage(Request $request, Exam $exam)
     {
-        $request->validate(['image' => 'required|image']);
+        $request->validate([
+            'image' => 'required' // Validasi sederhana bahwa 'image' ada
+        ]);
 
         // Buat record hasil baru saat siswa mengklik tombol kamera
         $examResult = ExamResult::create([
@@ -45,10 +48,30 @@ class UlanganController extends Controller
             'score' => 0,
         ]);
 
-        // Simpan foto wajah ke Cloudinary
-        $path = $request->file('image')->store('face_images');
-        $examResult->face_image_path = $path;
-        $examResult->save();
+        // PERBAIKAN: Tangani file blob dari request secara manual
+        try {
+            // Ambil konten file dari request
+            $fileContents = file_get_contents($request->file('image')->getRealPath());
+
+            // Simpan file sementara di disk lokal
+            $tempPath = 'temp/' . uniqid() . '.png';
+            Storage::disk('local')->put($tempPath, $fileContents);
+
+            // Unggah file dari disk lokal ke Cloudinary
+            $uploadedFile = Storage::disk('cloudinary')->putFile('face_images', new File(storage_path('app/' . $tempPath)));
+
+            // Hapus file sementara
+            Storage::disk('local')->delete($tempPath);
+
+            // Simpan path dari Cloudinary ke database
+            $examResult->face_image_path = $uploadedFile;
+            $examResult->save();
+        } catch (\Exception $e) {
+            // Jika terjadi error, hapus record hasil yang sudah dibuat dan kirim response error
+            $examResult->delete();
+            \Log::error('Cloudinary Upload Failed: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Upload ke Cloudinary gagal.'], 500);
+        }
 
         return response()->json([
             'success' => true,
