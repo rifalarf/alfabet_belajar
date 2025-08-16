@@ -32,13 +32,19 @@
     },
     "scripts": {
         "post-autoload-dump": [
-            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ],
+        "post-install-cmd": [
+            "echo 'Running frontend build...'",
+            "npm install --include=dev",
+            "npm run build"
+        ],
+        "post-update-cmd": [
             "@php artisan package:discover --ansi"
         ]
     },
     "config": {
         "optimize-autoloader": true,
-        "preferred-install": "dist",
         "sort-packages": true
     }
 }
