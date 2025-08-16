@@ -299,7 +299,7 @@
                                 <div class="flex flex-col md:flex-row items-center gap-8">
                                     <div class="w-full md:w-2/5 flex justify-center">
                                         <div class="w-full max-w-sm bg-gray-50 p-2 rounded-xl shadow-inner border">
-                                            <video src="{{ asset($question->correctAnswer->video_path) }}" controls class="w-full h-auto rounded-md"></video>
+                                            <x-media-video :path="$question->correctAnswer->video_path" class="w-full h-auto rounded-md" />
                                         </div>
                                     </div>
                                     <div class="w-full md:w-3/5 grid grid-cols-2 gap-4">
@@ -325,11 +325,16 @@
                                     </div>
                                     <div class="w-full md:w-2/3 grid grid-cols-2 gap-4">
                                         @foreach($question->options as $option)
-                                        <div class="option-wrapper rounded-lg border-2 border-gray-200 bg-white p-1 shadow-sm answer-option"
-                                            tabindex="0"
-                                            data-is-correct="{{ $option->alphabet_id == $question->correctAnswer->id ? 'true' : 'false' }}"
-                                            data-question-id="{{ $question->id }}">
-                                            <video src="{{ asset($option->alphabet->video_path) }}" class="w-full h-auto rounded-md aspect-video" controls></video>
+                                        <div class="option-wrapper rounded-lg border-2 border-gray-200 bg-white p-1 shadow-sm" tabindex="0">
+                                            <x-media-video :path="$option->alphabet->video_path">
+                                                <x-slot name="slot">
+                                                    <button class="w-full answer-option bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 transition"
+                                                        data-is-correct="{{ $option->alphabet_id == $question->correctAnswer->id ? 'true' : 'false' }}"
+                                                        data-question-id="{{ $question->id }}">
+                                                        Pilih
+                                                    </button>
+                                                </x-slot>
+                                            </x-media-video>
                                         </div>
                                         @endforeach
                                     </div>
@@ -352,7 +357,7 @@
                         @empty
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                             <div class="p-12 text-gray-500 text-center">
-                                <h3 class="text-lg font-medium">Oops!</h3>
+                                <h3 class="text-lg font-medium">Oops!</
                                 <p>Soal untuk ulangan ini belum disiapkan oleh guru.</p>
                             </div>
                         </div>
@@ -594,6 +599,7 @@
             });
 
             allQuestions.forEach(questionDiv => {
+                // Targetkan tombol 'Pilih' (answer-option) dan juga gambar (answer-option-img)
                 const answerOptions = questionDiv.querySelectorAll('.answer-option, .answer-option-img');
 
                 answerOptions.forEach(option => {
@@ -605,8 +611,12 @@
 
                         userAnswers[questionId] = isCorrect;
 
-                        answerOptions.forEach(btn => btn.classList.remove('selected'));
-                        this.classList.add('selected');
+                        // Hapus 'selected' dari semua kartu di soal ini
+                        const allWrappersInQuestion = questionDiv.querySelectorAll('.option-wrapper');
+                        allWrappersInQuestion.forEach(wrapper => wrapper.classList.remove('selected'));
+
+                        // Tambahkan 'selected' ke pembungkus elemen yang diklik
+                        this.closest('.option-wrapper').classList.add('selected');
 
                         const navBtn = document.getElementById(`nav-item-${questionId}`);
                         if (navBtn) navBtn.classList.add('active');

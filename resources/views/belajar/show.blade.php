@@ -20,8 +20,10 @@
                             </div>
                         </div>
 
-                        <div class="w-full md:w-7/12">
-                            <video src="{{ asset($alphabet->video_path) }}" controls class="w-full rounded-lg shadow-md aspect-video"></video>
+                        <div class="w-full md:w-7/12 flex justify-center">
+                            <div class="w-full max-w-sm">
+                                <x-media-video :path="$alphabet->video_path" />
+                            </div>
                         </div>
 
                     </div>

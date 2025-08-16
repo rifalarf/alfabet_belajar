@@ -58,13 +58,10 @@
                     </div>
                     <div class="p-6">
                         @if($question->type == 'video_to_image')
-                        <div class="text-center mb-6">
-                            <p class="text-gray-600">Perhatikan video berikut dan pilih gambar yang benar!</p>
-                        </div>
                         <div class="flex flex-col md:flex-row items-center gap-8">
                             <div class="w-full md:w-2/5 flex justify-center">
                                 <div class="w-full max-w-sm bg-gray-50 p-2 rounded-xl shadow-inner border">
-                                    <video src="{{ asset($question->correctAnswer->video_path) }}" controls class="w-full h-auto rounded-md"></video>
+                                    <x-media-video :path="$question->correctAnswer->video_path" class="w-full h-auto rounded-md" />
                                 </div>
                             </div>
                             <div class="w-full md:w-3/5 grid grid-cols-2 gap-4">
@@ -77,9 +74,6 @@
                             </div>
                         </div>
                         @elseif($question->type == 'image_to_video')
-                        <div class="text-center mb-6">
-                            <p class="text-gray-600">Perhatikan gambar berikut dan pilih video yang benar!</p>
-                        </div>
                         <div class="flex flex-col md:flex-row items-center gap-8">
                             <div class="w-full md:w-1/3 flex justify-center">
                                 <div class="w-full max-w-xs bg-gray-50 p-4 rounded-xl shadow-inner border">
@@ -88,9 +82,15 @@
                             </div>
                             <div class="w-full md:w-2/3 grid grid-cols-2 gap-4">
                                 @foreach($question->options as $option)
-                                <div class="option-wrapper rounded-lg border-2 border-gray-200 bg-white p-2 shadow-sm answer-option"
-                                    data-is-correct="{{ $option->alphabet_id == $question->correctAnswer->id ? 'true' : 'false' }}">
-                                    <video src="{{ asset($option->alphabet->video_path) }}" class="w-full h-auto rounded-md aspect-video" controls></video>
+                                <div class="option-wrapper rounded-lg border-2 border-gray-200 bg-white p-2 shadow-sm">
+                                    <x-media-video :path="$option->alphabet->video_path">
+                                        <x-slot name="slot">
+                                            <button class="w-full answer-option bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 transition"
+                                                data-is-correct="{{ $option->alphabet_id == $question->correctAnswer->id ? 'true' : 'false' }}">
+                                                Pilih
+                                            </button>
+                                        </x-slot>
+                                    </x-media-video>
                                 </div>
                                 @endforeach
                             </div>
@@ -136,6 +136,7 @@
             const allQuestions = document.querySelectorAll('[id^="question-"]');
 
             allQuestions.forEach(questionDiv => {
+                // PERBAIKAN: Targetkan kedua jenis jawaban, baik tombol (.answer-option) maupun gambar (.answer-option-img)
                 const answerOptions = questionDiv.querySelectorAll('.answer-option, .answer-option-img');
 
                 answerOptions.forEach(option => {
@@ -145,11 +146,14 @@
 
                         userAnswers[questionId] = isCorrect;
 
-                        answerOptions.forEach(btn => {
-                            btn.classList.remove('selected');
+                        // PERBAIKAN: Hapus 'selected' dari semua kartu di soal ini
+                        const allWrappersInQuestion = questionDiv.querySelectorAll('.option-wrapper');
+                        allWrappersInQuestion.forEach(wrapper => {
+                            wrapper.classList.remove('selected');
                         });
 
-                        this.classList.add('selected');
+                        // Tambahkan 'selected' ke pembungkus elemen yang diklik
+                        this.closest('.option-wrapper').classList.add('selected');
                     });
                 });
             });
