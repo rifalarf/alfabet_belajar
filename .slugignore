@@ -1,0 +1,41 @@
+# Node build artefacts (sudah dipakai hasil vite di public/build)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Tests & docs (kurangi vendor size)
+tests/
+phpunit.xml
+phpunit.xml.dist
+vendor/**/tests/
+vendor/**/Tests/
+vendor/**/test/
+vendor/**/docs/
+vendor/**/Docs/
+vendor/**/examples/
+vendor/**/Examples/
+vendor/**/.github/
+vendor/**/benchmark*/
+vendor/**/benchmarks*/
+
+# Uploaded / generated (jangan dibundel; runtime akan buat sendiri)
+storage/app/public/face_images/
+storage/app/public/videos/
+public/storage/
+public/assets/videos/
+storage/debugbar/
+
+# Raw / besar yang tidak wajib
+*.mp4
+*.mkv
+*.avi
+*.mov
+*.webm
+*.zip
+*.rar
+*.7z
+*.psd
+*.ai
+*.bak
+*.sql
