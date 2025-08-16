@@ -6,8 +6,8 @@ use App\Models\Exam;
 use App\Models\ExamResult;
 use App\Models\Question;
 use Illuminate\Http\Request;
-use Illuminate\Http\File;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class UlanganController extends Controller
 {
@@ -38,38 +38,28 @@ class UlanganController extends Controller
     public function storeFaceImage(Request $request, Exam $exam)
     {
         $request->validate([
-            'image' => 'required' // Validasi sederhana bahwa 'image' ada
+            'image' => 'required|image'
         ]);
 
-        // Buat record hasil baru saat siswa mengklik tombol kamera
         $examResult = ExamResult::create([
             'exam_id' => $exam->id,
-            'student_name' => 'Siswa', // Nama default, bisa diubah jika ada login siswa
+            'student_name' => 'Siswa',
             'score' => 0,
         ]);
 
-        // PERBAIKAN: Tangani file blob dari request secara manual
         try {
-            // Ambil konten file dari request
-            $fileContents = file_get_contents($request->file('image')->getRealPath());
+            $filePath = $request->file('image')->getRealPath();
 
-            // Simpan file sementara di disk lokal
-            $tempPath = 'temp/' . uniqid() . '.png';
-            Storage::disk('local')->put($tempPath, $fileContents);
+            $uploadedFileUrl = Cloudinary::upload($filePath, [
+                'folder' => 'face_images'
+            ])->getSecurePath();
 
-            // Unggah file dari disk lokal ke Cloudinary
-            $uploadedFile = Storage::disk('cloudinary')->putFile('face_images', new File(storage_path('app/' . $tempPath)));
-
-            // Hapus file sementara
-            Storage::disk('local')->delete($tempPath);
-
-            // Simpan path dari Cloudinary ke database
-            $examResult->face_image_path = $uploadedFile;
+            $examResult->face_image_path = $uploadedFileUrl;
             $examResult->save();
+
         } catch (\Exception $e) {
-            // Jika terjadi error, hapus record hasil yang sudah dibuat dan kirim response error
             $examResult->delete();
-            \Log::error('Cloudinary Upload Failed: ' . $e->getMessage());
+            Log::error('Cloudinary Upload Failed: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Upload ke Cloudinary gagal.'], 500);
         }
 

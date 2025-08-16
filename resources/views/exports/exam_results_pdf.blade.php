@@ -23,7 +23,7 @@
             <tr>
                 <td>
                     @if($result->face_image_path)
-                        <img src="{{ cloudinary()->getImage($result->face_image_path)->toUrl() }}">
+                        <img src="{{ $result->face_image_path }}">
                     @else
                         Tidak ada foto
                     @endif

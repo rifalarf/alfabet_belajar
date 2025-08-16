@@ -14,7 +14,7 @@
                             <div class="w-full md:w-1/3">
                                 <h3 class="text-lg font-semibold mb-2">Foto Verifikasi</h3>
                                 @if($result->face_image_path)
-                                    <img src="{{ cloudinary()->getImage($result->face_image_path)->toUrl() }}" alt="Foto Wajah {{ $result->student_name }}" class="rounded-lg shadow-md w-full">
+                                    <img src="{{ $result->face_image_path }}" alt="Foto Wajah {{ $result->student_name }}" class="rounded-lg shadow-md w-full">
                                 @else
                                     <div class="w-full h-64 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500">
                                         <span>Tidak ada foto</span>
