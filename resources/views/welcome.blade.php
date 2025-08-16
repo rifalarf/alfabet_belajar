@@ -66,7 +66,7 @@
                             <p class="mt-3 text-center font-semibold text-gray-700 group-hover:text-green-600">Latihan</p>
                         </a>
                         <a href="{{ route('ulangan.index') }}" class="group block rounded-xl border border-gray-200 bg-gray-100 p-4 shadow-lg transition-all duration-300 hover:bg-gray-200 hover:border-gray-500 hover:ring-2 hover:ring-gray-300">
-                            <img src="{{ asset('assets/images/Ulangan.png') }}" alt="Mulai Ulangan" class="mx-auto h-24 w-auto">
+                            <img src="{{ asset('assets/images/ulangan.png') }}" alt="Mulai Ulangan" class="mx-auto h-24 w-auto">
                             <p class="mt-3 text-center font-semibold text-gray-700 group-hover:text-gray-600">Ulangan</p>
                         </a>
                     </div>
