@@ -1,6 +1,5 @@
 <x-app-layout>
     <x-slot name="header">
-        <!-- Header dinamis: gambar judul + gambar huruf -->
         <div class="flex items-center gap-4">
             <img src="{{ asset('assets/images/belajar_huruf.png') }}" alt="Belajar Huruf" class="h-16">
             <img src="{{ asset('assets/images/' . strtoupper($alphabet->letter) . '.png') }}" alt="Huruf {{ strtoupper($alphabet->letter) }}" class="h-16">
