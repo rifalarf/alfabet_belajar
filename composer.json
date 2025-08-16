@@ -35,9 +35,9 @@
             "@php artisan package:discover --ansi"
         ],
         "post-install-cmd": [
-            "echo 'Running frontend build...'",
-            "npm install --include=dev",
-            "npm run build"
+            "echo 'Building frontend assets (composer post-install)'",
+            "[ -f package.json ] && npm install --include=dev || true",
+            "[ -f package.json ] && npm run build || true"
         ],
         "post-update-cmd": [
             "@php artisan package:discover --ansi"
