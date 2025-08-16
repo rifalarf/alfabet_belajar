@@ -1,8 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Belajar Huruf: ') . $alphabet->letter }}
-        </h2>
+        <!-- Header dinamis: gambar judul + gambar huruf -->
+        <div class="flex items-center gap-4">
+            <img src="{{ asset('assets/images/belajar_huruf.png') }}" alt="Belajar Huruf" class="h-16">
+            <img src="{{ asset('assets/images/' . strtoupper($alphabet->letter) . '.png') }}" alt="Huruf {{ strtoupper($alphabet->letter) }}" class="h-16">
+            <span class="sr-only">Belajar Huruf: {{ strtoupper($alphabet->letter) }}</span>
+        </div>
     </x-slot>
 
     <div class="min-h-screen" style="background-image: url('{{ asset('assets/images/bg_soal.png') }}'); background-size: cover; background-position: center; background-attachment: fixed;">

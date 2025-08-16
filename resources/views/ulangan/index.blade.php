@@ -1,7 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Ulangan') }}
+            <img src="{{ asset('assets\images\hasil_ulangan.png') }}" alt="Pilih Huruf untuk Dipelajari" class="h-16">
+
         </h2>
     </x-slot>
     <div class="min-h-screen" style="

@@ -1,8 +1,25 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Ulangan: ') . $examResult->exam->title }}
-        </h2>
+        @once
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700;800&display=swap" rel="stylesheet">
+            <style>
+                .exam-title {
+                    font-family: 'Baloo 2', cursive;
+                    font-size: 56pt;
+                    line-height: 1;
+                    font-weight: 700;
+                    color: #0099b4;
+                }
+                @media (max-width:1024px){ .exam-title { font-size:40pt; } }
+                @media (max-width:640px){ .exam-title { font-size:30pt; } }
+            </style>
+        @endonce
+        <div class="flex items-center gap-6">
+            <img src="{{ asset('assets/images/ulangan_header.png') }}" alt="Ulangan" class="h-20">
+            <span class="exam-title">{{ $examResult->exam->title }}</span>
+        </div>
     </x-slot>
 
     <style>

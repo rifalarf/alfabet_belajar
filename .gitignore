@@ -22,3 +22,33 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# --- Media besar (videos, raw audio) ---
+*.mp4
+*.m4v
+*.mov
+*.avi
+*.mkv
+*.webm
+*.flv
+*.wmv
+*.wav
+*.aiff
+*.flac
+
+# Folder media hasil capture / upload
+storage/app/public/face_images/
+storage/app/public/videos/
+public/assets/videos/
+
+# Simpan placeholder
+!storage/app/public/face_images/.gitkeep
+!storage/app/public/videos/.gitkeep
+!public/assets/videos/.gitkeep
+
+git init
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin https://github.com/rifalarf/belajar_alfabet.git
+git push -u origin main

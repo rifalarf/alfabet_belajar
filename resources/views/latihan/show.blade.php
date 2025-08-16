@@ -1,8 +1,14 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Latihan: ') . $level->name }}
-        </h2>
+        @php
+            // Ambil huruf terakhir dari nama level, contoh "Level A" -> "a"
+            $levelLetter = strtolower(substr(trim($level->name), -1));
+            $imagePath = 'assets/images/level_' . $levelLetter . '.png';
+        @endphp
+        <div class="flex items-center gap-4">
+            <img src="{{ asset($imagePath) }}" alt="{{ $level->name }}" class="h-16">
+            <span class="sr-only">{{ $level->name }}</span>
+        </div>
     </x-slot>
 
     <style>
