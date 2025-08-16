@@ -45,8 +45,8 @@ class UlanganController extends Controller
             'score' => 0,
         ]);
 
-        // Simpan foto wajah
-        $path = $request->file('image')->store('face_images', 'public');
+        // Simpan foto wajah ke Cloudinary
+        $path = $request->file('image')->store('face_images');
         $examResult->face_image_path = $path;
         $examResult->save();
 

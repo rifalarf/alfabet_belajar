@@ -22,8 +22,8 @@
         @foreach($results as $result)
             <tr>
                 <td>
-                    @if($result->face_image_path && file_exists(public_path('storage/' . $result->face_image_path)))
-                        <img src="{{ public_path('storage/' . $result->face_image_path) }}">
+                    @if($result->face_image_path)
+                        <img src="{{ cloudinary()->getImage($result->face_image_path)->toUrl() }}">
                     @else
                         Tidak ada foto
                     @endif
