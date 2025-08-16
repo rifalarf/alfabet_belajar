@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Filesystem Disk
@@ -13,7 +12,9 @@ return [
     |
     */
 
-    'default' => env('FILESYSTEM_DISK', 'local'),
+    'default' => env('FILESYSTEM_DISK', 'public'),
+
+    'cloud' => env('FILESYSTEM_CLOUD', 's3'),
 
     /*
     |--------------------------------------------------------------------------
@@ -29,13 +30,10 @@ return [
     */
 
     'disks' => [
-
         'local' => [
             'driver' => 'local',
-            'root' => storage_path('app/private'),
-            'serve' => true,
+            'root' => storage_path('app'),
             'throw' => false,
-            'report' => false,
         ],
 
         'public' => [
@@ -44,7 +42,14 @@ return [
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
             'throw' => false,
-            'report' => false,
+        ],
+
+        'videos' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/videos'),
+            'url' => env('APP_URL').'/storage/videos',
+            'visibility' => 'public',
+            'throw' => false,
         ],
 
         's3' => [
@@ -57,9 +62,7 @@ return [
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
-            'report' => false,
         ],
-
     ],
 
     /*
@@ -76,5 +79,4 @@ return [
     'links' => [
         public_path('storage') => storage_path('app/public'),
     ],
-
 ];
