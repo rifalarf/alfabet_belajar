@@ -7,7 +7,9 @@ use App\Models\ExamResult;
 use App\Models\Question;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+// --- PERUBAHAN: Impor kelas inti Cloudinary ---
+use Cloudinary\Cloudinary;
+use Cloudinary\Configuration\Configuration;
 
 class UlanganController extends Controller
 {
@@ -48,20 +50,33 @@ class UlanganController extends Controller
         ]);
 
         try {
+            // --- PERBAIKAN DEFINITIF: Konfigurasi Cloudinary secara manual ---
+            // Ini untuk melewati semua masalah cache dan file konfigurasi Laravel.
+            $config = new Configuration();
+            $config->cloud->cloudName = env('CLOUDINARY_CLOUD_NAME');
+            $config->cloud->apiKey = env('CLOUDINARY_API_KEY');
+            $config->cloud->apiSecret = env('CLOUDINARY_API_SECRET');
+            $config->url->secure = true;
+
+            $cloudinary = new Cloudinary($config);
+            // --- AKHIR PERBAIKAN ---
+
             $filePath = $request->file('image')->getRealPath();
 
-            $uploadedFileUrl = Cloudinary::upload($filePath, [
+            // Gunakan instance yang baru kita buat untuk mengunggah
+            $uploadResult = $cloudinary->uploadApi()->upload($filePath, [
                 'folder' => 'face_images'
-            ])->getSecurePath();
+            ]);
+
+            // Dapatkan URL dari hasil upload
+            $uploadedFileUrl = $uploadResult['secure_url'];
 
             $examResult->face_image_path = $uploadedFileUrl;
             $examResult->save();
 
         } catch (\Exception $e) {
             $examResult->delete();
-            // PERBAIKAN: Catat pesan error yang spesifik dari Cloudinary
             Log::error('Cloudinary Upload Failed: ' . $e->getMessage());
-            // Kirim pesan error yang lebih informatif (hanya dalam mode debug)
             $errorMessage = config('app.debug') ? $e->getMessage() : 'Upload ke Cloudinary gagal.';
             return response()->json(['success' => false, 'message' => $errorMessage], 500);
         }
