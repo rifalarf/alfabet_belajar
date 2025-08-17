@@ -303,7 +303,8 @@ return [
         'font_dir' => storage_path('fonts'), // Font tetap di storage
         'font_cache' => '/tmp',
         'temp_dir' => '/tmp',
-        'chroot' => realpath(base_path()),
+        // --- PERBAIKAN DEFINITIF: Nonaktifkan chroot jail ---
+        'chroot' => null,
         // --- AKHIR PERBAIKAN ---
 
         'enable_font_subsetting' => false,
