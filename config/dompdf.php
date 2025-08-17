@@ -22,62 +22,25 @@ return [
     'options' => [
         /**
          * The location of the DOMPDF font directory
-         *
-         * The location of the directory where DOMPDF will store fonts and font metrics
-         * Note: This directory must exist and be writable by the webserver process.
-         * *Please note the trailing slash.*
-         *
-         * Notes regarding fonts:
-         * Additional .afm font metrics can be added by executing load_font.php from command line.
-         *
-         * Only the original "Base 14 fonts" are present on all pdf viewers. Additional fonts must
-         * be embedded in the pdf file or the PDF may not display correctly. This can significantly
-         * increase file size unless font subsetting is enabled. Before embedding a font please
-         * review your rights under the font license.
-         *
-         * Any font specification in the source HTML is translated to the closest font available
-         * in the font directory.
-         *
-         * The pdf standard "Base 14 fonts" are:
-         * Courier, Courier-Bold, Courier-BoldOblique, Courier-Oblique,
-         * Helvetica, Helvetica-Bold, Helvetica-BoldOblique, Helvetica-Oblique,
-         * Times-Roman, Times-Bold, Times-BoldItalic, Times-Italic,
-         * Symbol, ZapfDingbats.
          */
-        'font_dir' => storage_path('fonts'), // advised by dompdf (https://github.com/dompdf/dompdf/pull/782)
+        'font_dir' => storage_path('fonts'),
 
         /**
          * The location of the DOMPDF font cache directory
-         *
-         * This directory contains the cached font metrics for the fonts used by DOMPDF.
-         * This directory can be the same as DOMPDF_FONT_DIR
-         *
-         * Note: This directory must exist and be writable by the webserver process.
          */
-        'font_cache' => storage_path('fonts'),
+        // --- PERBAIKAN UNTUK HEROKU ---
+        'font_cache' => '/tmp',
 
         /**
          * The location of a temporary directory.
-         *
-         * The directory specified must be writeable by the webserver process.
-         * The temporary directory is required to download remote images and when
-         * using the PDFLib back end.
          */
-        'temp_dir' => sys_get_temp_dir(),
+        'temp_dir' => '/tmp',
 
         /**
-         * ==== IMPORTANT ====
-         *
-         * dompdf's "chroot": Prevents dompdf from accessing system files or other
-         * files on the webserver.  All local files opened by dompdf must be in a
-         * subdirectory of this directory.  DO NOT set it to '/' since this could
-         * allow an attacker to use dompdf to read any files on the server.  This
-         * should be an absolute path.
-         * This is only checked on command line call by dompdf.php, but not by
-         * direct class use like:
-         * $dompdf = new DOMPDF();  $dompdf->load_html($htmldata); $dompdf->render(); $pdfdata = $dompdf->output();
+         * dompdf's "chroot"
          */
-        'chroot' => realpath(base_path()),
+        'chroot' => null,
+        // --- AKHIR PERBAIKAN ---
 
         /**
          * Protocol whitelist
@@ -266,7 +229,7 @@ return [
          *
          * @var bool
          */
-        'enable_remote' => true,
+        'enable_remote' => true, // Pastikan ini tetap true
 
         /**
          * List of allowed remote hosts
