@@ -298,10 +298,14 @@ return [
     ],
 
     'defines' => [
-        'font_dir' => storage_path('fonts'),
-        'font_cache' => storage_path('fonts'),
-        'temp_dir' => sys_get_temp_dir(),
+        // --- PERBAIKAN UNTUK HEROKU ---
+        // Mengarahkan direktori sementara ke /tmp yang bisa ditulis di Heroku
+        'font_dir' => storage_path('fonts'), // Font tetap di storage
+        'font_cache' => '/tmp',
+        'temp_dir' => '/tmp',
         'chroot' => realpath(base_path()),
+        // --- AKHIR PERBAIKAN ---
+
         'enable_font_subsetting' => false,
         'pdf_backend' => 'CPDF',
         'default_media_type' => 'screen',
@@ -311,9 +315,35 @@ return [
         'enable_html5_parser' => false,
         'enable_php' => false,
         'enable_javascript' => false,
-        'enable_remote' => true, // <-- UBAH INI MENJADI TRUE
+        'enable_remote' => true, // Pastikan ini tetap true
         'font_height_ratio' => 1.1,
         'enable_css_float' => false,
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | PDFLib Settings
+    |--------------------------------------------------------------------------
+    |
+    | If you are using PDFlib, you can set the path to the PDFlib library here.
+    |
+    */
+    'pdflib' => [
+        /**
+         * The location of the PDFlib library
+         *
+         * This is the path to the directory where the PDFlib library is installed.
+         * Note: This directory must exist and be writable by the webserver process.
+         * *Please note the trailing slash.*
+         */
+        'path' => '/usr/local/lib/pdflib/',
+
+        /**
+         * PDFlib license key
+         *
+         * If you have a license key for PDFlib, you can enter it here. If you do not
+         * have a license key, you can obtain one from the PDFlib website.
+         */
+        'license' => '',
+    ],
 ];
