@@ -22,6 +22,7 @@
         @foreach($results as $result)
             <tr>
                 <td>
+                    {{-- PERBAIKAN: Langsung gunakan path karena sudah berupa URL --}}
                     @if($result->face_image_path)
                         <img src="{{ $result->face_image_path }}">
                     @else

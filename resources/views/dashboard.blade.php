@@ -123,6 +123,7 @@
                                 <tr class="hover:bg-gray-50">
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-4">
+                                            {{-- PERBAIKAN: Langsung gunakan path karena sudah berupa URL --}}
                                             @if($result->face_image_path)
                                             <button @click="showModal = true; modalImage = '{{ $result->face_image_path }}'">
                                                 <img src="{{ $result->face_image_path }}" alt="Foto" class="w-12 h-12 rounded-lg object-cover cursor-pointer hover:opacity-80 transition-opacity">

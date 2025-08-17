@@ -50,10 +50,12 @@ class UlanganController extends Controller
         try {
             $filePath = $request->file('image')->getRealPath();
 
+            // PERBAIKAN: Pastikan kita mendapatkan URL lengkap
             $uploadedFileUrl = Cloudinary::upload($filePath, [
                 'folder' => 'face_images'
             ])->getSecurePath();
 
+            // Simpan URL LENGKAP ke database
             $examResult->face_image_path = $uploadedFileUrl;
             $examResult->save();
 
