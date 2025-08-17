@@ -1,2 +1,2 @@
-web: vendor/bin/heroku-php-apache2 -d memory_limit=512M public/
+web: vendor/bin/heroku-php-apache2 public/
 release: php artisan migrate --force && php artisan storage:link || true
