@@ -50,19 +50,20 @@ class UlanganController extends Controller
         try {
             $filePath = $request->file('image')->getRealPath();
 
-            // PERBAIKAN: Pastikan kita mendapatkan URL lengkap
             $uploadedFileUrl = Cloudinary::upload($filePath, [
                 'folder' => 'face_images'
             ])->getSecurePath();
 
-            // Simpan URL LENGKAP ke database
             $examResult->face_image_path = $uploadedFileUrl;
             $examResult->save();
 
         } catch (\Exception $e) {
             $examResult->delete();
+            // PERBAIKAN: Catat pesan error yang spesifik dari Cloudinary
             Log::error('Cloudinary Upload Failed: ' . $e->getMessage());
-            return response()->json(['success' => false, 'message' => 'Upload ke Cloudinary gagal.'], 500);
+            // Kirim pesan error yang lebih informatif (hanya dalam mode debug)
+            $errorMessage = config('app.debug') ? $e->getMessage() : 'Upload ke Cloudinary gagal.';
+            return response()->json(['success' => false, 'message' => $errorMessage], 500);
         }
 
         return response()->json([
