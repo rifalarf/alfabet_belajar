@@ -88,17 +88,29 @@
                             },
                             body: formData
                         })
-                        .then(response => response.json())
+                        .then(response => {
+                            // Cek apakah responsnya JSON atau teks biasa (untuk error)
+                            const contentType = response.headers.get("content-type");
+                            if (response.ok && contentType && contentType.indexOf("application/json") !== -1) {
+                                return response.json();
+                            }
+                            // Jika bukan JSON, kemungkinan besar ini adalah halaman error HTML
+                            return response.text().then(text => {
+                                throw new Error(text || 'Server returned a non-JSON response.');
+                            });
+                        })
                         .then(data => {
                             if (data.success && data.redirect_url) {
                                 window.location.href = data.redirect_url;
                             } else {
-                                throw new Error('Upload failed');
+                                // Gunakan pesan error dari server jika ada
+                                throw new Error(data.message || 'Upload failed');
                             }
                         })
                         .catch(error => {
-                            console.error('Error:', error);
-                            alert('Gagal mengunggah foto. Silakan coba lagi.');
+                            // Tampilkan error yang lebih detail di console
+                            console.error('Detailed Error:', error);
+                            alert('Gagal mengunggah foto. Silakan coba lagi dan cek console browser untuk detail.');
                             captureBtn.disabled = false;
                             captureBtn.textContent = 'Ambil Foto & Lanjutkan';
                         });
