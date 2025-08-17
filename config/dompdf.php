@@ -28,7 +28,6 @@ return [
         /**
          * The location of the DOMPDF font cache directory
          */
-        // --- PERBAIKAN UNTUK HEROKU ---
         'font_cache' => '/tmp',
 
         /**
@@ -40,7 +39,16 @@ return [
          * dompdf's "chroot"
          */
         'chroot' => null,
-        // --- AKHIR PERBAIKAN ---
+
+        // --- TAMBAHKAN BLOK INI UNTUK MASALAH SSL DI HEROKU ---
+        'http_context' => stream_context_create([
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true,
+            ],
+        ]),
+        // --- AKHIR BLOK TAMBAHAN ---
 
         /**
          * Protocol whitelist
