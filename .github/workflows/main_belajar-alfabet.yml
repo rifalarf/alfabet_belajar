@@ -18,7 +18,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: '8.3'
           extensions: mbstring, intl, bcmath, pdo_mysql
           tools: composer
 
@@ -65,3 +65,4 @@ jobs:
           slot-name: 'Production'
           package: 'app.zip'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F3D89BDC0B8F47BF8DB5AF41E316A779 }}
+
