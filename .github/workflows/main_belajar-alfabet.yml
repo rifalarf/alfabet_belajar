@@ -31,7 +31,7 @@ jobs:
         run: |
           php artisan config:cache
           php artisan route:cache
-          php artisan view:cache
+          php artisan view:cache || true
           php artisan event:cache || true
           php artisan storage:link || true
 
@@ -65,4 +65,5 @@ jobs:
           slot-name: 'Production'
           package: 'app.zip'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F3D89BDC0B8F47BF8DB5AF41E316A779 }}
+
 
